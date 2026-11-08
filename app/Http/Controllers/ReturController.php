@@ -13,7 +13,7 @@ class ReturController extends Controller
         $returList      = Retur::all();
         $penerimaanList = DB::table('penerimaan')->get();
         $userList       = DB::table('user')->get();
-        return view('retur.index', compact('returList', 'penerimaanList', 'userList'));
+        return view('detail.retur', compact('returList', 'penerimaanList', 'userList'));
     }
 
     public function store(Request $request)
@@ -25,7 +25,7 @@ class ReturController extends Controller
             'iduser'       => $request->iduser,
             'created_at'   => now(),
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Retur Berhasil Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -34,16 +34,16 @@ class ReturController extends Controller
             'idpenerimaan' => $request->idpenerimaan,
             'iduser'       => $request->iduser,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Retur Berhasil Diperbarui');
     }
 
     public function destroy($id)
     {
         try {
             DB::table('retur')->where('idretur', $id)->delete();
-            return redirect()->back()->with('success', 'Berhasil Dihapus');
+            return redirect()->back()->with('success', 'Retur Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Retur ini terhubung dengan rincian retur!');
+            return redirect()->back()->with('error', 'Gagal Hapus: Retur terhubung dengan detail retur!');
         }
     }
 }

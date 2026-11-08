@@ -56,7 +56,7 @@
                             <button class="btn btn-sm btn-outline-warning me-1" data-bs-toggle="modal" data-bs-target="#modalEdit{{ $item->{"Kode Barang"} }}">
                                 Ubah
                             </button>
-                            <form action="{{ route('barang.destroy', $item->{"Kode Barang"}) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin menghapus data ini?')">
+                            <form action="{{ route('barang.destroy', $item->{"Kode Barang"}) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin menghapus data ini?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
@@ -90,8 +90,8 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Ukuran Kemasan</label>
                                             <select name="jenis" class="form-select" required>
-                                                <option value="S">Kecil</option>
-                                                <option value="M">Besar</option>
+                                                <option value="S">Kecil (Single)</option>
+                                                <option value="M">Besar (Master)</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
@@ -115,9 +115,7 @@
                         </div>
                     </div>
                 @empty
-                    <tr>
-                        <td colspan="7" class="text-center py-4 text-muted">Belum ada produk terdaftar.</td>
-                    </tr>
+                    <tr><td colspan="7" class="text-center py-4 text-muted">Belum ada produk terdaftar.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -149,8 +147,8 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Ukuran Kemasan</label>
                         <select name="jenis" class="form-select" required>
-                            <option value="S">Kecil</option>
-                            <option value="M">Besar</option>
+                            <option value="S">Kecil (Single)</option>
+                            <option value="M">Besar (Master)</option>
                         </select>
                     </div>
                     <div class="mb-3">

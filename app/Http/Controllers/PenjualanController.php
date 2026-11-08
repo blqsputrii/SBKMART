@@ -13,7 +13,7 @@ class PenjualanController extends Controller
         $penjualanList = Penjualan::all();
         $userList      = DB::table('user')->get();
         $marginList    = DB::table('margin_penjualan')->get();
-        return view('penjualan.index', compact('penjualanList', 'userList', 'marginList'));
+        return view('detail.penjualan', compact('penjualanList', 'userList', 'marginList'));
     }
 
     public function store(Request $request)
@@ -28,7 +28,7 @@ class PenjualanController extends Controller
             'total_nilai'        => $request->total_nilai,
             'created_at'         => now(),
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Penjualan Berhasil Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -40,16 +40,16 @@ class PenjualanController extends Controller
             'ppn'                => $request->ppn,
             'total_nilai'        => $request->total_nilai,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Penjualan Berhasil Diperbarui');
     }
 
     public function destroy($id)
     {
         try {
             DB::table('penjualan')->where('idpenjualan', $id)->delete();
-            return redirect()->back()->with('success', 'Berhasil Dihapus');
+            return redirect()->back()->with('success', 'Penjualan Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Penjualan ini terhubung dengan detail penjualan!');
+            return redirect()->back()->with('error', 'Gagal Hapus: Penjualan terhubung dengan detail penjualan!');
         }
     }
 }

@@ -11,7 +11,7 @@ class VendorController extends Controller
     public function index()
     {
         $vendorList = Vendor::all();
-        return view('vendor.index', compact('vendorList'));
+        return view('layouts.vendor', compact('vendorList'));
     }
 
     public function store(Request $request)
@@ -23,7 +23,7 @@ class VendorController extends Controller
             'badan_hukum' => $request->badan_hukum,
             'status'      => $request->status,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Vendor Berhasil Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -33,7 +33,7 @@ class VendorController extends Controller
             'badan_hukum' => $request->badan_hukum,
             'status'      => $request->status,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Vendor Berhasil Diperbarui');
     }
 
     public function destroy($id)
@@ -42,7 +42,7 @@ class VendorController extends Controller
             DB::table('vendor')->where('idvendor', $id)->delete();
             return redirect()->back()->with('success', 'Vendor Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Vendor ini masih digunakan di transaksi pengadaan!');
+            return redirect()->back()->with('error', 'Gagal Hapus: Vendor ini masih terikat transaksi pengadaan!');
         }
     }
 }

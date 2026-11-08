@@ -12,7 +12,7 @@ class UserController extends Controller
     {
         $userList = User::all();
         $roleList = DB::table('role')->get();
-        return view('user.index', compact('userList', 'roleList'));
+        return view('layouts.user', compact('userList', 'roleList'));
     }
 
     public function store(Request $request)
@@ -24,7 +24,7 @@ class UserController extends Controller
             'username' => $request->username,
             'password' => $request->password,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Pengguna Berhasil Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -33,22 +33,20 @@ class UserController extends Controller
             'idrole'   => $request->idrole,
             'username' => $request->username,
         ];
-
         if ($request->filled('password')) {
             $data['password'] = $request->password;
         }
-
         DB::table('user')->where('iduser', $id)->update($data);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Pengguna Berhasil Diperbarui');
     }
 
     public function destroy($id)
     {
         try {
             DB::table('user')->where('iduser', $id)->delete();
-            return redirect()->back()->with('success', 'Berhasil Dihapus');
+            return redirect()->back()->with('success', 'Pengguna Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Akun ini masih terikat dengan transaksi!');
+            return redirect()->back()->with('error', 'Gagal Hapus: Akun ini masih terikat transaksi!');
         }
     }
 }

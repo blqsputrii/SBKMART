@@ -12,7 +12,7 @@ class MarginPenjualanController extends Controller
     {
         $marginList = MarginPenjualan::all();
         $userList   = DB::table('user')->get();
-        return view('margin-penjualan.index', compact('marginList', 'userList'));
+        return view('layouts.margin-penjualan', compact('marginList', 'userList'));
     }
 
     public function store(Request $request)
@@ -26,7 +26,7 @@ class MarginPenjualanController extends Controller
             'created_at'         => now(),
             'updated_at'         => now(),
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Margin Berhasil Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -37,14 +37,14 @@ class MarginPenjualanController extends Controller
             'status'     => $request->status,
             'updated_at' => now(),
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Margin Berhasil Diperbarui');
     }
 
     public function destroy($id)
     {
         try {
             DB::table('margin_penjualan')->where('idmargin_penjualan', $id)->delete();
-            return redirect()->back()->with('success', 'Margin Penjualan Berhasil Dihapus');
+            return redirect()->back()->with('success', 'Margin Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect()->back()->with('error', 'Gagal Hapus: Margin ini pernah dipakai di transaksi penjualan!');
         }

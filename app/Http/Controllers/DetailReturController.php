@@ -13,7 +13,7 @@ class DetailReturController extends Controller
         $detailList     = DetailRetur::all();
         $returList      = DB::table('retur')->get();
         $penerimaanList = DB::table('detail_penerimaan')->get();
-        return view('detail-retur.index', compact('detailList', 'returList', 'penerimaanList'));
+        return view('detail.detail-retur', compact('detailList', 'returList', 'penerimaanList'));
     }
 
     public function store(Request $request)
@@ -26,7 +26,7 @@ class DetailReturController extends Controller
             'jumlah'              => $request->jumlah,
             'alasan'              => $request->alasan,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Detail Retur Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -37,12 +37,12 @@ class DetailReturController extends Controller
             'jumlah'              => $request->jumlah,
             'alasan'              => $request->alasan,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Detail Retur Diperbarui');
     }
 
     public function destroy($id)
     {
         DB::table('detail_retur')->where('iddetail_retur', $id)->delete();
-        return redirect()->back()->with('success', 'Berhasil Dihapus');
+        return redirect()->back()->with('success', 'Detail Retur Dihapus');
     }
 }

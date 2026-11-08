@@ -13,7 +13,7 @@ class DetailPengadaanController extends Controller
         $detailList    = DetailPengadaan::all();
         $pengadaanList = DB::table('pengadaan')->get();
         $barangList    = DB::table('barang')->get();
-        return view('detail-pengadaan.index', compact('detailList', 'pengadaanList', 'barangList'));
+        return view('detail.detail-pengadaan', compact('detailList', 'pengadaanList', 'barangList'));
     }
 
     public function store(Request $request)
@@ -27,7 +27,7 @@ class DetailPengadaanController extends Controller
             'jumlah'             => $request->jumlah,
             'sub_total'          => $request->harga_satuan * $request->jumlah,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Detail Pengadaan Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -39,12 +39,12 @@ class DetailPengadaanController extends Controller
             'jumlah'       => $request->jumlah,
             'sub_total'    => $request->harga_satuan * $request->jumlah,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Detail Pengadaan Diperbarui');
     }
 
     public function destroy($id)
     {
         DB::table('detail_pengadaan')->where('iddetail_pengadaan', $id)->delete();
-        return redirect()->back()->with('success', 'Berhasil Dihapus');
+        return redirect()->back()->with('success', 'Detail Pengadaan Dihapus');
     }
 }

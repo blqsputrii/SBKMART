@@ -52,7 +52,6 @@
             border-radius: 8px;
         }
         .btn-blue:hover { background-color: #1d4ed8; color: #FFFFFF; }
-
         .btn-teal {
             background-color: var(--teal-brand);
             color: #FFFFFF;
@@ -60,7 +59,6 @@
             border-radius: 8px;
         }
         .btn-teal:hover { background-color: #0f766e; color: #FFFFFF; }
-
         .table-custom th {
             background-color: var(--blue-soft);
             color: var(--navy-dark);
@@ -87,7 +85,7 @@
                         <i class="bi bi-database-fill me-1"></i> Data Master
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('barang.index') }}"><i class="bi bi-box-seam me-2"></i>Katalog Produk</a></li>
+                        <li><a class="dropdown-item" href="{{ route('barang.index') }}"><i class="bi bi-box-seam me-2"></i> Katalog Produk</a></li>
                         <li><a class="dropdown-item" href="{{ route('satuan.index') }}"><i class="bi bi-tag me-2"></i> Satuan Kemasan</a></li>
                         <li><a class="dropdown-item" href="{{ route('vendor.index') }}"><i class="bi bi-truck me-2"></i> Data Pemasok</a></li>
                         <li><a class="dropdown-item" href="{{ route('user.index') }}"><i class="bi bi-people me-2"></i> Akun Pengguna</a></li>
@@ -108,6 +106,17 @@
                     </ul>
                 </li>
 
+                <li class="nav-item dropdown me-2">
+                    <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown" style="color: var(--amber-accent) !important;">
+                        <i class="bi bi-cpu-fill me-1"></i> Logic & Database
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('sp.index') }}"><i class="bi bi-gear-wide-connected me-2 text-primary"></i> Stored Procedure (SP)</a></li>
+                        <li><a class="dropdown-item" href="{{ route('function.index') }}"><i class="bi bi-calculator me-2 text-success"></i> Function SQL</a></li>
+                        <li><a class="dropdown-item" href="{{ route('trigger.index') }}"><i class="bi bi-lightning-charge me-2 text-warning"></i> Trigger Database</a></li>
+                    </ul>
+                </li>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-journal-text me-1"></i> Detail & Mutasi
@@ -118,7 +127,7 @@
                         <li><a class="dropdown-item" href="{{ route('detail-penjualan.index') }}">Detail Penjualan</a></li>
                         <li><a class="dropdown-item" href="{{ route('detail-retur.index') }}">Detail Retur</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item fw-bold" href="{{ route('kartu-stok.index') }}"><i class="bi bi-card-checklist me-2 text-teal"></i> Kartu Stok Mutasi</a></li>
+                        <li><a class="dropdown-item fw-bold" href="{{ route('kartu-stok.index') }}"><i class="bi bi-card-checklist me-2 text-teal"></i> Kartu Stok Mutasi (Trigger Log)</a></li>
                     </ul>
                 </li>
             </ul>
@@ -130,6 +139,11 @@
     @if(session('success'))
         <div class="alert alert-success border-0 shadow-sm mb-4" style="background-color: #DCFCE7; color: #166534;">
             <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger border-0 shadow-sm mb-4" style="background-color: #FEE2E2; color: #991B1B;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
         </div>
     @endif
     @yield('content')

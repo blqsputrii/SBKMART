@@ -10,6 +10,6 @@ class KartuStokController extends Controller
     public function index()
     {
         $kartuStokList = KartuStok::all();
-        return view('kartu-stok.index', compact('kartuStokList'));
+        return view('detail.kartu-stok', compact('kartuStokList'));
     }
 }

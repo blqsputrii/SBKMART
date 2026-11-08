@@ -13,7 +13,7 @@ class DetailPenerimaanController extends Controller
         $detailList     = DetailPenerimaan::all();
         $penerimaanList = DB::table('penerimaan')->get();
         $barangList     = DB::table('barang')->get();
-        return view('detail-penerimaan.index', compact('detailList', 'penerimaanList', 'barangList'));
+        return view('detail.detail-penerimaan', compact('detailList', 'penerimaanList', 'barangList'));
     }
 
     public function store(Request $request)
@@ -27,7 +27,7 @@ class DetailPenerimaanController extends Controller
             'harga_satuan_terima' => $request->harga_satuan_terima,
             'sub_total_terima'    => $request->harga_satuan_terima * $request->jumlah_terima,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Detail Penerimaan Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -39,12 +39,12 @@ class DetailPenerimaanController extends Controller
             'harga_satuan_terima' => $request->harga_satuan_terima,
             'sub_total_terima'    => $request->harga_satuan_terima * $request->jumlah_terima,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Detail Penerimaan Diperbarui');
     }
 
     public function destroy($id)
     {
         DB::table('detail_penerimaan')->where('iddetail_penerimaan', $id)->delete();
-        return redirect()->back()->with('success', 'Berhasil Dihapus');
+        return redirect()->back()->with('success', 'Detail Penerimaan Dihapus');
     }
 }

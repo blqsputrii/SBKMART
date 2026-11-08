@@ -13,7 +13,7 @@ class PengadaanController extends Controller
         $pengadaanList = Pengadaan::all();
         $vendorList    = DB::table('vendor')->get();
         $userList      = DB::table('user')->get();
-        return view('pengadaan.index', compact('pengadaanList', 'vendorList', 'userList'));
+        return view('detail.pengadaan', compact('pengadaanList', 'vendorList', 'userList'));
     }
 
     public function store(Request $request)
@@ -28,7 +28,7 @@ class PengadaanController extends Controller
             'total_nilai'    => $request->total_nilai,
             'status'         => $request->status ?? 'P',
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Pengadaan Berhasil Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -41,16 +41,16 @@ class PengadaanController extends Controller
             'total_nilai'    => $request->total_nilai,
             'status'         => $request->status,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Pengadaan Berhasil Diperbarui');
     }
 
     public function destroy($id)
     {
         try {
             DB::table('pengadaan')->where('idpengadaan', $id)->delete();
-            return redirect()->back()->with('success', 'Berhasil Dihapus');
+            return redirect()->back()->with('success', 'Pengadaan Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Pengadaan ini terhubung dengan rincian atau penerimaan!');
+            return redirect()->back()->with('error', 'Gagal Hapus: Pengadaan terhubung dengan penerimaan gudang!');
         }
     }
 }

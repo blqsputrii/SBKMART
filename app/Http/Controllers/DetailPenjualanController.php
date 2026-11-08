@@ -13,7 +13,7 @@ class DetailPenjualanController extends Controller
         $detailList    = DetailPenjualan::all();
         $penjualanList = DB::table('penjualan')->get();
         $barangList    = DB::table('barang')->get();
-        return view('detail-penjualan.index', compact('detailList', 'penjualanList', 'barangList'));
+        return view('detail.detail-penjualan', compact('detailList', 'penjualanList', 'barangList'));
     }
 
     public function store(Request $request)
@@ -27,7 +27,7 @@ class DetailPenjualanController extends Controller
             'jumlah'             => $request->jumlah,
             'subtotal'           => $request->harga_satuan * $request->jumlah,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Detail Penjualan Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -39,12 +39,12 @@ class DetailPenjualanController extends Controller
             'jumlah'       => $request->jumlah,
             'subtotal'     => $request->harga_satuan * $request->jumlah,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Detail Penjualan Diperbarui');
     }
 
     public function destroy($id)
     {
         DB::table('detail_penjualan')->where('iddetail_penjualan', $id)->delete();
-        return redirect()->back()->with('success', 'Berhasil Dihapus');
+        return redirect()->back()->with('success', 'Detail Penjualan Dihapus');
     }
 }

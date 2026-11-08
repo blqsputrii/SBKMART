@@ -11,7 +11,7 @@ class RoleController extends Controller
     public function index()
     {
         $roleList = Role::all();
-        return view('role.index', compact('roleList'));
+        return view('layouts.role', compact('roleList'));
     }
 
     public function store(Request $request)
@@ -21,7 +21,7 @@ class RoleController extends Controller
             'idrole'    => $maxId + 1,
             'nama_role' => $request->nama_role,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Ditambahkan');
+        return redirect()->back()->with('success', 'Role Berhasil Ditambahkan');
     }
 
     public function update(Request $request, $id)
@@ -29,7 +29,7 @@ class RoleController extends Controller
         DB::table('role')->where('idrole', $id)->update([
             'nama_role' => $request->nama_role,
         ]);
-        return redirect()->back()->with('success', 'Berhasil Diperbarui');
+        return redirect()->back()->with('success', 'Role Berhasil Diperbarui');
     }
 
     public function destroy($id)
@@ -38,7 +38,7 @@ class RoleController extends Controller
             DB::table('role')->where('idrole', $id)->delete();
             return redirect()->back()->with('success', 'Role Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Role ini masih digunakan oleh akun pengguna!');
+            return redirect()->back()->with('error', 'Gagal Hapus: Role ini masih dipakai oleh akun pengguna!');
         }
     }
 }
