@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Penjualan extends Model
 {
-    Protected $table = 'penjualan';
-    Protected $primaryKey = 'idpenjualan';
+    Protected $table = 'v_penjualan';
+    Protected $primaryKey = 'Nomor Struk Penjualan';
     public $timestamps = false;
-    protected $guarded = [];
 }

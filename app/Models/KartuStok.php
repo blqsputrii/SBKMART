@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class KartuStok extends Model
 {
-    Protected $table = 'kartu_stok';
-    Protected $primaryKey = 'idkartu_stok';
+    Protected $table = 'v_kartu_stok';
+    Protected $primaryKey = 'Nomor Riwayat Stok';
     public $timestamps = false;
-    protected $guarded = [];
 }

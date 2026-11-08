@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vendor extends Model
 {
-    Protected $table = 'vendor';
-    Protected $primaryKey = 'idvendor';
+    Protected $table = 'v_vendor';
+    Protected $primaryKey = 'Kode Pemasok';
     public $timestamps = false;
-    protected $guarded = [];
 }

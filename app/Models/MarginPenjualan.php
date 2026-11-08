@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MarginPenjualan extends Model
 {
-    Protected $table = 'margin_penjualan';
-    Protected $primaryKey = 'idmargin_penjualan';
+    Protected $table = 'v_margin_penjualan';
+    Protected $primaryKey = 'Kode Margin';
     public $timestamps = false;
-    protected $guarded = [];
 }

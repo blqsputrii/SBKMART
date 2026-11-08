@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Retur extends Model
 {
-    Protected $table = 'retur';
-    Protected $primaryKey = 'idretur';
+    Protected $table = 'v_retur';
+    Protected $primaryKey = 'Nomor Retur';
     public $timestamps = false;
-    protected $guarded = [];
 }

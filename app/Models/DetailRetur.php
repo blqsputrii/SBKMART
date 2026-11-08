@@ -6,8 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DetailRetur extends Model
 {
-    Protected $table = 'detail_retur';
-    Protected $primaryKey = 'iddetail_retur';
+    Protected $table = 'v_detail_retur';
+    Protected $primaryKey = 'Kode Rincian Retur';
     public $timestamps = false;
-    protected $guarded = [];
 }
