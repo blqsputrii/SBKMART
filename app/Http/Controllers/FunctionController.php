@@ -4,20 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class FunctionController extends Controller
 {
     public function index(Request $request)
     {
-        $omsetResult = DB::select("SELECT fn_hitung_total_penjualan() AS Omset");
-        $omset = $omsetResult[0]->omset ?? 0;
+        $hasilCek = null;
+        $idpenerimaan = $request->input('idpenerimaan');
+        $batasHari = $request->input('batas_hari', 7);
 
-        $idTerima = $request->get('idpenerimaan', 1);
-        $batasHari = $request->get('batas_hari', 7);
+        if ($request->isMethod('post') && $idpenerimaan) {
+            try {
+                $result = DB::select('SELECT fn_cek_kelayakan_retur(?, ?) AS status_kelayakan', [
+                    $idpenerimaan,
+                    $batasHari
+                ]);
 
-        $returResult = DB::select("SELECT fn_cek_kelayakan_retur(?,?) AS status_retur", [$idTerima, $batasHari]);
-        $statusRetur = $returResult[0]->status_retur ?? 'Tidak Diketahui';
+                $hasilCek = $result[0]->status_kelayakan ?? 'Tidak Diketahui';
+            } catch (Exception $e) {
+                $hasilCek = 'Error: ' . $e->getMessage();
+            }
+        }
 
-        return view('function', compact('omset', 'statusRetur', 'idTerima', 'batasHari'));
+        return view('detail.function', compact('hasilCek', 'idpenerimaan', 'batasHari'));
     }
 }

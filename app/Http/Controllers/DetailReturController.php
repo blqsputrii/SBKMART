@@ -13,7 +13,9 @@ class DetailReturController extends Controller
         $detailList     = DetailRetur::all();
         $returList      = DB::table('retur')->get();
         $penerimaanList = DB::table('detail_penerimaan')->get();
-        return view('detail.detail-retur', compact('detailList', 'returList', 'penerimaanList'));
+        $penjualanList  = DB::table('penjualan')->get();
+
+        return view('detail.detail-retur', compact('detailList', 'returList', 'penerimaanList', 'penjualanList'));
     }
 
     public function store(Request $request)

@@ -6,8 +6,7 @@
 <div class="card-custom">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold mb-1" style="color: var(--navy-dark);">Master Satuan Kemasan</h4>
-            <p class="text-muted small mb-0">Daftar satuan ukuran produk (Pcs, Kg, Botol, Karton, dll).</p>
+            <h4 class="fw-bold mb-1" style="color: var(--navy-dark);">Satuan Kemasan</h4>
         </div>
         <button class="btn btn-blue px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalTambah">
             <i class="bi bi-plus-lg me-1"></i> Tambah Satuan
@@ -52,7 +51,6 @@
                         </td>
                     </tr>
 
-                    {{-- Modal Edit --}}
                     <div class="modal fade" id="modalEdit{{ $item->{"Kode Satuan"} }}" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -92,7 +90,6 @@
     </div>
 </div>
 
-{{-- Modal Tambah --}}
 <div class="modal fade" id="modalTambah" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">

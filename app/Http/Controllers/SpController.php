@@ -3,44 +3,63 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Exception;
 
 class SpController extends Controller
 {
     public function index()
     {
-        return view('sp');
+        $penjualan = [];
+        $retur = [];
+
+        try {
+            $penjualan = DB::table('v_penjualan')->orderBy('Nomor Struk Penjualan', 'DESC')->limit(10)->get();
+            $retur = DB::table('v_retur')->orderBy('Nomor Retur', 'DESC')->limit(10)->get();
+        } catch (Exception $e) {
+
+        }
+
+        return view('detail.sp', compact('penjualan', 'retur'));
     }
 
     public function prosesPenjualan(Request $request)
     {
+        $request->validate([
+            'idpenjualan' => 'required|integer',
+            'iduser'      => 'required|integer',
+            'idbarang'    => 'required|integer',
+            'jumlah'      => 'required|integer',
+            'harga'       => 'required|numeric',
+        ]);
+
         try {
-            DB::statement("CALL sp_proses_penjualan_barang(?, ?, ?, ?, ?)", [
+            DB::statement('CALL sp_proses_penjualan_barang(?, ?, ?, ?, ?)', [
                 $request->idpenjualan,
                 $request->iduser,
                 $request->idbarang,
                 $request->jumlah,
-                $request->harga_satuan
+                $request->harga
             ]);
 
-            return redirect()->back()->with('succes', 'Berhasil');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('eror', 'Gagal: ' . $e->getMessage());
+            return redirect()->route('sp.index')->with('success', 'Stored Procedure sp_proses_penjualan_barang berhasil dieksekusi!');
+        } catch (Exception $e) {
+            return redirect()->route('sp.index')->with('error', 'Gagal memproses penjualan: ' . $e->getMessage());
         }
     }
 
     public function prosesRetur(Request $request)
     {
-        /** @var \App\Models\User|null $user */
-        $user = Auth::user();
-
-        if (!$user || !$user->isAdmin()) {
-            return redirect()->back()->with('error', 'Akses Ditolak');
-        }
+        $request->validate([
+            'idretur'      => 'required|integer',
+            'idpenerimaan' => 'required|integer',
+            'iduser'       => 'required|integer',
+            'idbarang'     => 'required|integer',
+            'jumlah'       => 'required|integer',
+        ]);
 
         try {
-            DB::statement("CALL sp_proses_retur_barang(?, ?, ?, ?, ?)", [
+            DB::statement('CALL sp_proses_retur_barang(?, ?, ?, ?, ?)', [
                 $request->idretur,
                 $request->idpenerimaan,
                 $request->iduser,
@@ -48,9 +67,9 @@ class SpController extends Controller
                 $request->jumlah
             ]);
 
-            return redirect()->back()->with('succes', 'Berhasil');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('eror', 'Gagal: ' . $e->getMessage());
+            return redirect()->route('sp.index')->with('success', 'Stored Procedure sp_proses_retur_barang berhasil dieksekusi!');
+        } catch (Exception $e) {
+            return redirect()->route('sp.index')->with('error', 'Gagal memproses retur: ' . $e->getMessage());
         }
     }
 }

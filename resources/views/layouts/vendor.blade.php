@@ -7,7 +7,6 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h4 class="fw-bold mb-1" style="color: var(--navy-dark);">Daftar Pemasok (Vendor)</h4>
-            <p class="text-muted small mb-0">Mitra penyedia stok barang, jenis legalitas usaha, dan status kerjasamanya.</p>
         </div>
         <button class="btn btn-teal px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalTambah">
             <i class="bi bi-plus-lg me-1"></i> Tambah Pemasok

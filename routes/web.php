@@ -40,8 +40,8 @@ Route::resource('retur', ReturController::class);
 Route::resource('detail-retur', DetailReturController::class);
 Route::get('kartu-stok', [KartuStokController::class, 'index'])->name('kartu-stok.index');
 
-Route::get('sp', [SpController::class, 'index'])->name('sp.index');
-Route::post('sp/proses-penjualan', [SpController::class, 'prosesPenjualan'])->name('sp.prosesPenjualan');
-Route::post('sp/proses-retur', [SpController::class, 'prosesRetur'])->name('sp.prosesRetur');
-Route::get('function', [FunctionController::class, 'index'])->name('function.index');
-Route::get('trigger', [TriggerController::class, 'index'])->name('trigger.index');
+Route::get('/sp', [SpController::class, 'index'])->name('sp.index');
+Route::post('/sp/proses-penjualan', [SpController::class, 'prosesPenjualan'])->name('sp.penjualan');
+Route::post('/sp/proses-retur', [SpController::class, 'prosesRetur'])->name('sp.retur');
+Route::match(['get', 'post'], '/function', [FunctionController::class, 'index'])->name('function.index');
+Route::get('/trigger', [TriggerController::class, 'index'])->name('trigger.index');
