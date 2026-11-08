@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'SBKMART System')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         :root {
             --navy-dark: #1E293B;
@@ -73,7 +72,7 @@
 <nav class="navbar navbar-expand-lg navbar-custom py-3 mb-4">
     <div class="container">
         <a class="navbar-brand fw-bold fs-4" href="{{ route('barang.index') }}">
-            <i class="bi bi-shop me-2" style="color: var(--amber-accent);"></i>SBKMART
+            SBKMART
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -82,44 +81,44 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown me-2">
                     <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-database-fill me-1"></i> Data Master
+                        Data Master
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('barang.index') }}"><i class="bi bi-box-seam me-2"></i> Katalog Produk</a></li>
-                        <li><a class="dropdown-item" href="{{ route('satuan.index') }}"><i class="bi bi-tag me-2"></i> Satuan Kemasan</a></li>
-                        <li><a class="dropdown-item" href="{{ route('vendor.index') }}"><i class="bi bi-truck me-2"></i> Data Pemasok</a></li>
-                        <li><a class="dropdown-item" href="{{ route('user.index') }}"><i class="bi bi-people me-2"></i> Akun Pengguna</a></li>
-                        <li><a class="dropdown-item" href="{{ route('role.index') }}"><i class="bi bi-person-badge me-2"></i> Peran Sistem</a></li>
-                        <li><a class="dropdown-item" href="{{ route('margin-penjualan.index') }}"><i class="bi bi-percent me-2"></i> Margin Keuntungan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('barang.index') }}">Katalog Produk</a></li>
+                        <li><a class="dropdown-item" href="{{ route('satuan.index') }}">Satuan Kemasan</a></li>
+                        <li><a class="dropdown-item" href="{{ route('vendor.index') }}">Data Pemasok</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.index') }}">Akun Pengguna</a></li>
+                        <li><a class="dropdown-item" href="{{ route('role.index') }}">Peran Sistem</a></li>
+                        <li><a class="dropdown-item" href="{{ route('margin-penjualan.index') }}">Margin Keuntungan</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown me-2">
                     <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-cart-check-fill me-1"></i> Transaksi Utama
+                        Transaksi Utama
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('pengadaan.index') }}"><i class="bi bi-bag-plus me-2"></i> Pengadaan Barang</a></li>
-                        <li><a class="dropdown-item" href="{{ route('penerimaan.index') }}"><i class="bi bi-box-arrow-in-down me-2"></i> Penerimaan Gudang</a></li>
-                        <li><a class="dropdown-item" href="{{ route('penjualan.index') }}"><i class="bi bi-receipt me-2"></i> Penjualan Kasir</a></li>
-                        <li><a class="dropdown-item" href="{{ route('retur.index') }}"><i class="bi bi-arrow-return-left me-2"></i> Retur Pengembalian</a></li>
+                        <li><a class="dropdown-item" href="{{ route('pengadaan.index') }}">Pengadaan Barang</a></li>
+                        <li><a class="dropdown-item" href="{{ route('penerimaan.index') }}">Penerimaan Gudang</a></li>
+                        <li><a class="dropdown-item" href="{{ route('penjualan.index') }}">Penjualan Kasir</a></li>
+                        <li><a class="dropdown-item" href="{{ route('retur.index') }}">Retur Pengembalian</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown me-2">
                     <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown" style="color: var(--amber-accent) !important;">
-                        <i class="bi bi-cpu-fill me-1"></i> Logic & Database
+                        Logic dan Database
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('sp.index') }}"><i class="bi bi-gear-wide-connected me-2 text-primary"></i> Stored Procedure (SP)</a></li>
-                        <li><a class="dropdown-item" href="{{ route('function.index') }}"><i class="bi bi-calculator me-2 text-success"></i> Function SQL</a></li>
-                        <li><a class="dropdown-item" href="{{ route('trigger.index') }}"><i class="bi bi-lightning-charge me-2 text-warning"></i> Trigger Database</a></li>
+                        <li><a class="dropdown-item" href="{{ route('sp.index') }}">Stored Procedure (SP)</a></li>
+                        <li><a class="dropdown-item" href="{{ route('function.index') }}">Function SQL</a></li>
+                        <li><a class="dropdown-item" href="{{ route('trigger.index') }}">Trigger Database</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle fw-semibold" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-journal-text me-1"></i> Detail & Mutasi
+                        Detail dan Mutasi
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{{ route('detail-pengadaan.index') }}">Detail Pengadaan</a></li>
@@ -127,7 +126,7 @@
                         <li><a class="dropdown-item" href="{{ route('detail-penjualan.index') }}">Detail Penjualan</a></li>
                         <li><a class="dropdown-item" href="{{ route('detail-retur.index') }}">Detail Retur</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item fw-bold" href="{{ route('kartu-stok.index') }}"><i class="bi bi-card-checklist me-2 text-teal"></i> Kartu Stok Mutasi (Trigger Log)</a></li>
+                        <li><a class="dropdown-item fw-bold" href="{{ route('kartu-stok.index') }}">Kartu Stok Mutasi (Trigger Log)</a></li>
                     </ul>
                 </li>
             </ul>
@@ -138,12 +137,12 @@
 <div class="container mb-5">
     @if(session('success'))
         <div class="alert alert-success border-0 shadow-sm mb-4" style="background-color: #DCFCE7; color: #166534;">
-            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+            {{ session('success') }}
         </div>
     @endif
     @if(session('error'))
         <div class="alert alert-danger border-0 shadow-sm mb-4" style="background-color: #FEE2E2; color: #991B1B;">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+            {{ session('error') }}
         </div>
     @endif
     @yield('content')

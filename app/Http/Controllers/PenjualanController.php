@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Penjualan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,46 +9,49 @@ class PenjualanController extends Controller
 {
     public function index()
     {
-        $penjualanList = Penjualan::all();
-        $userList      = DB::table('user')->get();
-        $marginList    = DB::table('margin_penjualan')->get();
-        return view('detail.penjualan', compact('penjualanList', 'userList', 'marginList'));
+        try {
+            $penjualanList = DB::table('v_penjualan')->get();
+        } catch (\Exception $e) {
+            $penjualanList = [];
+        }
+
+        return view('detail.penjualan', compact('penjualanList'));
+    }
+
+    public function create()
+    {
+        $userList = DB::table('user')->get();
+        $marginList = DB::table('margin_penjualan')->get();
+        $barangList = DB::table('barang')->get();
+
+        return view('penjualan.create', compact('userList', 'marginList', 'barangList'));
     }
 
     public function store(Request $request)
     {
-        $maxId = DB::table('penjualan')->max('idpenjualan') ?? 0;
-        DB::table('penjualan')->insert([
-            'idpenjualan'        => $maxId + 1,
-            'iduser'             => $request->iduser,
-            'idmargin_penjualan' => $request->idmargin_penjualan,
-            'subtotal_nilai'     => $request->subtotal_nilai,
-            'ppn'                => $request->ppn,
-            'total_nilai'        => $request->total_nilai,
-            'created_at'         => now(),
+        $request->validate([
+            'iduser' => 'required',
+            'idmargin_penjualan' => 'required',
+            'idbarang' => 'required',
+            'jumlah_beli' => 'required|integer|min:1',
+            'harga_satuan' => 'required|numeric',
         ]);
-        return redirect()->back()->with('success', 'Penjualan Berhasil Ditambahkan');
-    }
 
-    public function update(Request $request, $id)
-    {
-        DB::table('penjualan')->where('idpenjualan', $id)->update([
-            'iduser'             => $request->iduser,
-            'idmargin_penjualan' => $request->idmargin_penjualan,
-            'subtotal_nilai'     => $request->subtotal_nilai,
-            'ppn'                => $request->ppn,
-            'total_nilai'        => $request->total_nilai,
-        ]);
-        return redirect()->back()->with('success', 'Penjualan Berhasil Diperbarui');
-    }
-
-    public function destroy($id)
-    {
         try {
-            DB::table('penjualan')->where('idpenjualan', $id)->delete();
-            return redirect()->back()->with('success', 'Penjualan Berhasil Dihapus');
-        } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Penjualan terhubung dengan detail penjualan!');
+            DB::statement('CALL sp_proses_penjualan_barang(?, ?, ?, ?, ?)', [
+                $request->input('iduser'),
+                $request->input('idmargin_penjualan'),
+                $request->input('idbarang'),
+                $request->input('jumlah_beli'),
+                $request->input('harga_satuan'),
+            ]);
+
+            return redirect()->route('penjualan.index')
+                             ->with('success', 'Transaksi penjualan berhasil diproses!');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', 'Gagal memproses penjualan: ' . $e->getMessage());
         }
     }
 }

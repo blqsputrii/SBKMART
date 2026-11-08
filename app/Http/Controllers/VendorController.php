@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +9,7 @@ class VendorController extends Controller
 {
     public function index()
     {
-        $vendorList = Vendor::all();
+        $vendorList = DB::table('v_vendor')->get();
         return view('layouts.vendor', compact('vendorList'));
     }
 
@@ -42,7 +41,7 @@ class VendorController extends Controller
             DB::table('vendor')->where('idvendor', $id)->delete();
             return redirect()->back()->with('success', 'Vendor Berhasil Dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Vendor ini masih terikat transaksi pengadaan!');
+            return redirect()->back()->with('error', 'Gagal Hapus: Vendor ini masih terikat transaksi pengadaan.');
         }
     }
 }

@@ -9,7 +9,7 @@
             <h4 class="fw-bold mb-1" style="color: var(--navy-dark);">Daftar Pemasok (Vendor)</h4>
         </div>
         <button class="btn btn-teal px-3 py-2" data-bs-toggle="modal" data-bs-target="#modalTambah">
-            <i class="bi bi-plus-lg me-1"></i> Tambah Pemasok
+            Tambah Pemasok
         </button>
     </div>
 
@@ -28,26 +28,26 @@
                 @forelse($vendorList as $index => $item)
                     <tr>
                         <td class="text-center text-muted fw-bold">{{ $index + 1 }}</td>
-                        <td class="fw-bold" style="color: var(--navy-dark);">{{ $item->{"Nama Perusahaan Supplier"} }}</td>
+                        <td class="fw-bold" style="color: var(--navy-dark);">{{ $item->{"Nama Perusahaan"} }}</td>
                         <td class="text-center">
                             @if(str_contains(strtolower($item->{"Jenis Legalitas Usaha"} ?? ''), 'resmi'))
                                 <span class="badge" style="background-color: var(--blue-soft); color: var(--navy-dark);">
-                                    <i class="bi bi-building me-1"></i> {{ $item->{"Jenis Legalitas Usaha"} }}
+                                    {{ $item->{"Jenis Legalitas Usaha"} }}
                                 </span>
                             @else
                                 <span class="badge bg-light text-dark border">
-                                    <i class="bi bi-person me-1"></i> {{ $item->{"Jenis Legalitas Usaha"} }}
+                                    {{ $item->{"Jenis Legalitas Usaha"} }}
                                 </span>
                             @endif
                         </td>
                         <td class="text-center">
                             @if(str_contains(strtolower($item->{"Status Kerjasama"} ?? ''), 'aktif'))
                                 <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
-                                    <i class="bi bi-check-circle-fill me-1"></i> {{ $item->{"Status Kerjasama"} }}
+                                    {{ $item->{"Status Kerjasama"} }}
                                 </span>
                             @else
                                 <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
-                                    <i class="bi bi-x-circle-fill me-1"></i> {{ $item->{"Status Kerjasama"} }}
+                                    {{ $item->{"Status Kerjasama"} }}
                                 </span>
                             @endif
                         </td>
@@ -79,15 +79,15 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Jenis Legalitas Usaha</label>
                                             <select name="badan_hukum" class="form-select" required>
-                                                <option value="Y">Perusahaan Resmi (PT/CV)</option>
-                                                <option value="N">Toko Perorangan</option>
+                                                <option value="Y" {{ $item->{"Jenis Legalitas Usaha"} == 'Perusahaan Resmi (PT/CV)' ? 'selected' : '' }}>Perusahaan Resmi (PT/CV)</option>
+                                                <option value="N" {{ $item->{"Jenis Legalitas Usaha"} == 'Toko Perorangan' ? 'selected' : '' }}>Toko Perorangan</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-semibold">Status Kerjasama</label>
                                             <select name="status" class="form-select" required>
-                                                <option value="A">Aktif Bekerjasama</option>
-                                                <option value="N">Non-Aktif</option>
+                                                <option value="A" {{ $item->{"Status Kerjasama"} == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                                <option value="N" {{ $item->{"Status Kerjasama"} == 'Non-Aktif' ? 'selected' : '' }}>Non-Aktif</option>
                                             </select>
                                         </div>
                                     </div>
@@ -119,7 +119,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nama Perusahaan</label>
-                        <input type="text" name="nama_vendor" class="form-control" placeholder="Contoh: PT Indofood Sukses Makmur" required>
+                        <input type="text" name="nama_vendor" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Jenis Legalitas Usaha</label>
@@ -131,7 +131,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Status Kerjasama</label>
                         <select name="status" class="form-select" required>
-                            <option value="A">Aktif Bekerjasama</option>
+                            <option value="A">Aktif</option>
                             <option value="N">Non-Aktif</option>
                         </select>
                     </div>
