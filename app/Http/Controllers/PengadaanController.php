@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pengadaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,47 +9,73 @@ class PengadaanController extends Controller
 {
     public function index()
     {
-        $pengadaanList = Pengadaan::all();
-        $vendorList    = DB::table('vendor')->get();
-        $userList      = DB::table('user')->get();
-        return view('detail.pengadaan', compact('pengadaanList', 'vendorList', 'userList'));
+        $rows = DB::select('SELECT * FROM v_pengadaan ORDER BY `No. Pengadaan` DESC');
+        return view('pengadaan.index', compact('rows'));
+    }
+
+    public function create()
+    {
+        $vendor = DB::select("SELECT `Kode Vendor`, `Nama Vendor` FROM v_vendor WHERE `Status` = 'Aktif' ORDER BY `Nama Vendor`");
+        return view('pengadaan.create', compact('vendor'));
     }
 
     public function store(Request $request)
     {
-        $maxId = DB::table('pengadaan')->max('idpengadaan') ?? 0;
-        DB::table('pengadaan')->insert([
-            'idpengadaan'    => $maxId + 1,
-            'iduser'         => $request->iduser,
-            'idvendor'       => $request->idvendor,
-            'subtotal_nilai' => $request->subtotal_nilai,
-            'ppn'            => $request->ppn,
-            'total_nilai'    => $request->total_nilai,
-            'status'         => $request->status ?? 'P',
-        ]);
-        return redirect()->back()->with('success', 'Pengadaan Berhasil Ditambahkan');
-    }
-
-    public function update(Request $request, $id)
-    {
-        DB::table('pengadaan')->where('idpengadaan', $id)->update([
-            'iduser'         => $request->iduser,
-            'idvendor'       => $request->idvendor,
-            'subtotal_nilai' => $request->subtotal_nilai,
-            'ppn'            => $request->ppn,
-            'total_nilai'    => $request->total_nilai,
-            'status'         => $request->status,
-        ]);
-        return redirect()->back()->with('success', 'Pengadaan Berhasil Diperbarui');
-    }
-
-    public function destroy($id)
-    {
-        try {
-            DB::table('pengadaan')->where('idpengadaan', $id)->delete();
-            return redirect()->back()->with('success', 'Pengadaan Berhasil Dihapus');
-        } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Pengadaan terhubung dengan penerimaan gudang!');
+        $request->validate(['vendor' => 'required|integer'], $this->pesan(), ['vendor' => 'Vendor']);
+        $aktif = DB::select("SELECT COUNT(*) AS n FROM v_vendor WHERE `Kode Vendor` = ? AND `Status` = 'Aktif'", [$request->vendor])[0]->n;
+        if ($aktif == 0) {
+            return back()->withInput()->with('error', 'Vendor tidak ditemukan atau tidak aktif.');
         }
+
+        DB::insert('INSERT INTO pengadaan (user_iduser, vendor_idvendor, subtotal_nilai, ppn, total_nilai) VALUES (?, ?, 0, 0, 0)', [session('user_id'), $request->vendor]);
+        $nota = DB::getPdo()->lastInsertId();
+        return redirect()->route('pengadaan.show', $nota)
+                         ->with('success', 'Nota pengadaan nomor ' . $nota . ' dibuat. Silakan isi barang yang dipesan.');
+    }
+
+    public function show($id)
+    {
+        $nota = $this->satu('SELECT * FROM v_pengadaan WHERE `No. Pengadaan` = ?', [$id]);
+        $detail = DB::select('SELECT * FROM v_detail_pengadaan WHERE `No. Pengadaan` = ? ORDER BY `No. Detail`', [$id]);
+        $terima = DB::select('SELECT * FROM v_penerimaan WHERE `No. Pengadaan` = ? ORDER BY `No. Penerimaan`', [$id]);
+        $barang = [];
+        if ($nota->{'Status'} === 'Dipesan') {
+            $barang = DB::select('SELECT `Kode Barang`, `Nama Barang`, `Nama Satuan`, `Harga` FROM v_barang ORDER BY `Nama Barang`');
+        }
+        return view('pengadaan.show', compact('nota', 'detail', 'terima', 'barang'));
+    }
+
+    public function storeDetail(Request $request, $id)
+    {
+        $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.idbarang' => 'required|integer',
+            'items.*.jumlah' => 'required|integer|min:1',
+        ], $this->pesan(), [
+            'items' => 'Barang',
+            'items.*.idbarang' => 'Barang',
+            'items.*.jumlah' => 'Jumlah',
+        ]);
+
+        $this->satu('SELECT * FROM v_pengadaan WHERE `No. Pengadaan` = ?', [$id]);
+
+        $berhasil = 0;
+        $gagal = [];
+        foreach ($request->items as $i) {DB::statement('CALL sp_proses_transaksi(?, ?, ?, ?, ?, ?, ?, @id_penerimaan, @pesan)', ['D', session('user_id'), $id, $i['idbarang'], $i['jumlah'], null, 0]);
+            $hasil = DB::select('SELECT @pesan AS pesan')[0];
+            if ($hasil->pesan === 'OK') {$berhasil++;}
+            else {$nama = DB::select('SELECT `Nama Barang` AS nama FROM v_barang WHERE `Kode Barang` = ?', [$i['idbarang']]);
+                $gagal[] = ($nama[0]->nama ?? 'Barang') . ': ' . $hasil->pesan;
+            }
+        }
+
+        $redirect = redirect()->route('pengadaan.show', $id);
+        if ($berhasil > 0) {
+            $redirect->with('success', $berhasil . ' barang ditambahkan. Subtotal, PPN, dan total nota sudah diperbarui.');
+        }
+        if (count($gagal) > 0) {
+            $redirect->with('error', implode(' | ', $gagal));
+        }
+        return $redirect;
     }
 }

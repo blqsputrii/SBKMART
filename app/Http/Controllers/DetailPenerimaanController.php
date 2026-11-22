@@ -7,45 +7,27 @@ use Illuminate\Support\Facades\DB;
 
 class DetailPenerimaanController extends Controller
 {
-    public function index()
+    public function edit($id)
     {
-        $detailList     = DB::table('v_detail_penerimaan')->get();
-        $penerimaanList = DB::table('penerimaan')->get();
-        $barangList     = DB::table('barang')->get();
-
-        return view('detail.detail-penerimaan', compact('detailList', 'penerimaanList', 'barangList'));
-    }
-
-    public function store(Request $request)
-    {
-        $maxId = DB::table('detail_penerimaan')->max('iddetail_penerimaan') ?? 0;
-
-        DB::table('detail_penerimaan')->insert([
-            'iddetail_penerimaan' => $maxId + 1,
-            'idpenerimaan'        => $request->idpenerimaan,
-            'idbarang'            => $request->idbarang,
-            'jumlah_terima'       => $request->jumlah_terima,
-            'harga_satuan_terima' => $request->harga_satuan_terima,
-        ]);
-
-        return redirect()->back()->with('success', 'Detail Penerimaan Berhasil Ditambahkan');
+        $detail = $this->satu('SELECT * FROM v_detail_penerimaan WHERE `No. Detail` = ?', [$id]);
+        return view('penerimaan.edit', compact('detail'));
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('detail_penerimaan')->where('iddetail_penerimaan', $id)->update([
-            'idpenerimaan'        => $request->idpenerimaan,
-            'idbarang'            => $request->idbarang,
-            'jumlah_terima'       => $request->jumlah_terima,
-            'harga_satuan_terima' => $request->harga_satuan_terima,
-        ]);
+        $request->validate(
+            ['jumlah' => 'required|integer|min:1'],
+            $this->pesan(),
+            ['jumlah' => 'Jumlah diterima']
+        );
 
-        return redirect()->back()->with('success', 'Detail Penerimaan Berhasil Diperbarui');
-    }
-
-    public function destroy($id)
-    {
-        DB::table('detail_penerimaan')->where('iddetail_penerimaan', $id)->delete();
-        return redirect()->back()->with('success', 'Detail Penerimaan Berhasil Dihapus');
+        $detail = $this->satu('SELECT * FROM v_detail_penerimaan WHERE `No. Detail` = ?', [$id]);
+        DB::statement('CALL sp_proses_transaksi(?, ?, ?, ?, ?, ?, ?, @id_penerimaan, @pesan)', ['U', session('user_id'), null, null, $request->jumlah, $id, 0]);
+        $hasil = DB::select('SELECT @id_penerimaan AS id, @pesan AS pesan')[0];
+        if ($hasil->pesan !== 'OK') {
+            return back()->withInput()->with('error', $hasil->pesan);
+        }
+        return redirect()->route('penerimaan.show', $detail->{'No. Penerimaan'})
+                         ->with('success', 'Jumlah diterima berhasil diubah. Kartu stok dan status pengadaan ikut diperbarui.');
     }
 }

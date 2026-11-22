@@ -2,52 +2,77 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
+    private function satuanAktif()
+    {
+        return DB::select("SELECT `Kode Satuan`, `Nama Satuan` FROM v_satuan WHERE `Status` = 'Aktif' ORDER BY `Nama Satuan`");
+    }
+
+    private function aturan(): array
+    {
+        return ['nama' => 'required|max:45', 'jenis' => 'required|in:S,M', 'idsatuan' => 'required|integer','harga' => 'required|integer|min:0'];
+    }
+
+    private function atribut(): array
+    {
+        return ['nama' => 'Nama barang', 'jenis' => 'Ukuran', 'idsatuan' => 'Satuan', 'harga' => 'Harga dasar'];
+    }
+
     public function index()
     {
-        $barangList = Barang::all();
-        $satuanList = DB::table('satuan')->get();
-        return view('layouts.barang', compact('barangList', 'satuanList'));
+        $rows = DB::select('SELECT * FROM v_barang ORDER BY `Kode Barang`');
+        return view('barang.index', compact('rows'));
+    }
+
+    public function create()
+    {
+        return view('barang.form', ['data' => null, 'satuan' => $this->satuanAktif()]);
     }
 
     public function store(Request $request)
     {
-        $maxId = DB::table('barang')->max('idbarang') ?? 0;
-        DB::table('barang')->insert([
-            'idbarang' => $maxId + 1,
-            'idsatuan' => $request->idsatuan,
-            'jenis'    => $request->jenis,
-            'nama'     => $request->nama,
-            'harga'    => $request->harga,
-            'status'   => $request->status,
-        ]);
-        return redirect()->back()->with('success', 'Barang Berhasil Ditambahkan');
+        $request->validate($this->aturan(), $this->pesan(), $this->atribut());
+        DB::insert(
+            'INSERT INTO barang (nama, jenis, idsatuan, harga, status) VALUES (?, ?, ?, ?, 0)',
+            [$request->nama, $request->jenis, $request->idsatuan, $request->harga]);
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $r = $this->satu('SELECT * FROM v_barang WHERE `Kode Barang` = ?', [$id]);
+        $data = (object) [
+            'id'       => $r->{'Kode Barang'},
+            'nama'     => $r->{'Nama Barang'},
+            'jenis'    => $r->{'Ukuran'} === 'Medium' ? 'M' : 'S',
+            'idsatuan' => $r->{'Kode Satuan'},
+            'harga'    => $r->{'Harga'},
+        ];
+        return view('barang.form', ['data' => $data, 'satuan' => $this->satuanAktif()]);
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('barang')->where('idbarang', $id)->update([
-            'idsatuan' => $request->idsatuan,
-            'jenis'    => $request->jenis,
-            'nama'     => $request->nama,
-            'harga'    => $request->harga,
-            'status'   => $request->status,
-        ]);
-        return redirect()->back()->with('success', 'Barang Berhasil Diperbarui');
+        $request->validate($this->aturan(), $this->pesan(), $this->atribut());
+
+        DB::update(
+            'UPDATE barang SET nama = ?, jenis = ?, idsatuan = ?, harga = ? WHERE idbarang = ?',
+            [$request->nama, $request->jenis, $request->idsatuan, $request->harga, $id]
+        );
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil diubah.');
     }
 
     public function destroy($id)
     {
         try {
-            DB::table('barang')->where('idbarang', $id)->delete();
-            return redirect()->back()->with('success', 'Barang Berhasil Dihapus');
+            DB::delete('DELETE FROM barang WHERE idbarang = ?', [$id]);
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Barang ini pernah digunakan dalam transaksi!');
+            return back()->with('error', 'Barang tidak dapat dihapus karena sudah dipakai pada transaksi.');
         }
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus.');
     }
 }

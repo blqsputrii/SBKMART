@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,35 +9,43 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $roleList = Role::all();
-        return view('layouts.role', compact('roleList'));
+        $rows = DB::select('SELECT * FROM v_role ORDER BY `Kode Role`');
+        return view('role.index', compact('rows'));
+    }
+
+    public function create()
+    {
+        return view('role.form', ['data' => null]);
     }
 
     public function store(Request $request)
     {
-        $maxId = DB::table('role')->max('idrole') ?? 0;
-        DB::table('role')->insert([
-            'idrole'    => $maxId + 1,
-            'nama_role' => $request->nama_role,
-        ]);
-        return redirect()->back()->with('success', 'Role Berhasil Ditambahkan');
+        $request->validate(['nama_role' => 'required|max:100'], $this->pesan(), ['nama_role' => 'Nama role']);
+        DB::insert('INSERT INTO role (nama_role) VALUES (?)', [$request->nama_role]);
+        return redirect()->route('role.index')->with('success', 'Role berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $r = $this->satu('SELECT * FROM v_role WHERE `Kode Role` = ?', [$id]);
+        $data = (object) ['id' => $r->{'Kode Role'}, 'nama_role' => $r->{'Nama Role'}];
+        return view('role.form', compact('data'));
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('role')->where('idrole', $id)->update([
-            'nama_role' => $request->nama_role,
-        ]);
-        return redirect()->back()->with('success', 'Role Berhasil Diperbarui');
+        $request->validate(['nama_role' => 'required|max:100'], $this->pesan(), ['nama_role' => 'Nama role']);
+        DB::update('UPDATE role SET nama_role = ? WHERE idrole = ?', [$request->nama_role, $id]);
+        return redirect()->route('role.index')->with('success', 'Role berhasil diubah.');
     }
 
     public function destroy($id)
     {
         try {
-            DB::table('role')->where('idrole', $id)->delete();
-            return redirect()->back()->with('success', 'Role Berhasil Dihapus');
+            DB::delete('DELETE FROM role WHERE idrole = ?', [$id]);
         } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Role ini masih dipakai oleh akun pengguna!');
+            return back()->with('error', 'Role tidak dapat dihapus karena masih dipakai pengguna.');
         }
+        return redirect()->route('role.index')->with('success', 'Role berhasil dihapus.');
     }
 }

@@ -7,41 +7,63 @@ use Illuminate\Support\Facades\DB;
 
 class VendorController extends Controller
 {
+    private function aturan(): array
+    {
+        return [
+            'nama_vendor' => 'required|max:100',
+            'badan_hukum' => 'required|in:Y,N',
+            'status' => 'required|in:A,N',
+        ];
+    }
+
+    private function atribut(): array
+    {
+        return ['nama_vendor' => 'Nama vendor', 'badan_hukum' => 'Badan hukum', 'status' => 'Status'];
+    }
+
     public function index()
     {
-        $vendorList = DB::table('v_vendor')->get();
-        return view('layouts.vendor', compact('vendorList'));
+        $rows = DB::select('SELECT * FROM v_vendor ORDER BY `Kode Vendor`');
+        return view('vendor.index', compact('rows'));
+    }
+
+    public function create()
+    {
+        return view('vendor.form', ['data' => null]);
     }
 
     public function store(Request $request)
     {
-        $maxId = DB::table('vendor')->max('idvendor') ?? 0;
-        DB::table('vendor')->insert([
-            'idvendor'    => $maxId + 1,
-            'nama_vendor' => $request->nama_vendor,
-            'badan_hukum' => $request->badan_hukum,
-            'status'      => $request->status,
-        ]);
-        return redirect()->back()->with('success', 'Vendor Berhasil Ditambahkan');
+        $request->validate($this->aturan(), $this->pesan(), $this->atribut());
+        DB::insert('INSERT INTO vendor (nama_vendor, badan_hukum, status) VALUES (?, ?, ?)', [$request->nama_vendor, $request->badan_hukum, $request->status]);
+        return redirect()->route('vendor.index')->with('success', 'Vendor berhasil ditambahkan.');
+    }
+
+    public function edit($id)
+    {
+        $r = $this->satu('SELECT * FROM v_vendor WHERE `Kode Vendor` = ?', [$id]);
+        $data = (object) [
+            'id' => $r->{'Kode Vendor'},
+            'nama_vendor' => $r->{'Nama Vendor'},
+            'badan_hukum' => $r->{'Badan Hukum'} === 'Ya' ? 'Y' : 'N',
+            'status' => $r->{'Status'} === 'Aktif' ? 'A' : 'N',
+        ];
+        return view('vendor.form', compact('data'));
     }
 
     public function update(Request $request, $id)
     {
-        DB::table('vendor')->where('idvendor', $id)->update([
-            'nama_vendor' => $request->nama_vendor,
-            'badan_hukum' => $request->badan_hukum,
-            'status'      => $request->status,
-        ]);
-        return redirect()->back()->with('success', 'Vendor Berhasil Diperbarui');
+        $request->validate($this->aturan(), $this->pesan(), $this->atribut());
+        DB::update('UPDATE vendor SET nama_vendor = ?, badan_hukum = ?, status = ? WHERE idvendor = ?', [$request->nama_vendor, $request->badan_hukum, $request->status, $id]);
+        return redirect()->route('vendor.index')->with('success', 'Vendor berhasil diubah.');
     }
 
     public function destroy($id)
     {
-        try {
-            DB::table('vendor')->where('idvendor', $id)->delete();
-            return redirect()->back()->with('success', 'Vendor Berhasil Dihapus');
-        } catch (\Illuminate\Database\QueryException $e) {
-            return redirect()->back()->with('error', 'Gagal Hapus: Vendor ini masih terikat transaksi pengadaan.');
+        try {DB::delete('DELETE FROM vendor WHERE idvendor = ?', [$id]);}
+        catch (\Illuminate\Database\QueryException $e) {
+            return back()->with('error', 'Vendor tidak dapat dihapus karena sudah dipakai pada pengadaan.');
         }
+        return redirect()->route('vendor.index')->with('success', 'Vendor berhasil dihapus.');
     }
 }
