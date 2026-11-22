@@ -15,14 +15,14 @@ class PengadaanController extends Controller
 
     public function create()
     {
-        $vendor = DB::select("SELECT `Kode Vendor`, `Nama Vendor` FROM v_vendor WHERE `Status` = 'Aktif' ORDER BY `Nama Vendor`");
+        $vendor = DB::select("SELECT `Kode Vendor`, `Nama Vendor` FROM v_vendor WHERE `Status` COLLATE utf8mb4_0900_ai_ci = 'Aktif' COLLATE utf8mb4_0900_ai_ci");
         return view('pengadaan.create', compact('vendor'));
     }
 
     public function store(Request $request)
     {
         $request->validate(['vendor' => 'required|integer'], $this->pesan(), ['vendor' => 'Vendor']);
-        $aktif = DB::select("SELECT COUNT(*) AS n FROM v_vendor WHERE `Kode Vendor` = ? AND `Status` = 'Aktif'", [$request->vendor])[0]->n;
+        $aktif = DB::select("SELECT COUNT(*) AS n FROM v_vendor WHERE `Kode Vendor` = ? AND `Status` COLLATE utf8mb4_0900_ai_ci = 'Aktif' COLLATE utf8mb4_0900_ai_ci", [$request->vendor])[0]->n;
         if ($aktif == 0) {
             return back()->withInput()->with('error', 'Vendor tidak ditemukan atau tidak aktif.');
         }
